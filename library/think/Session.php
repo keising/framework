@@ -143,8 +143,11 @@ class Session
             $this->lock = $config['use_lock'];
         }
 
-        if (isset($config['var_session_id']) && isset($_REQUEST[$config['var_session_id']])) {
-            session_id($_REQUEST[$config['var_session_id']]);
+        //此处不能使用$_REQUEST 因为这个数据在 NGINX+fpm 下获取的结果是 s=/home/index/getuinfo/parms/.....
+        //处理同个浏览器登录多层级用户测试时需要用到
+        $req=input('');
+        if (isset($config['var_session_id']) && isset($req[$config['var_session_id']])) {
+            session_id($req[$config['var_session_id']]);
         } elseif (isset($config['id']) && !empty($config['id'])) {
             session_id($config['id']);
         }
